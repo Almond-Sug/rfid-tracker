@@ -4,6 +4,8 @@ A real-time RFID-based tracking system prototype built with Flask and SQLite.
 
 It tracks individual valve parts through workflow zones — Receiving, Warehouse, Machine Shop, and Shipping — with live updates via a web dashboard.
 
+🔗 Live site: https://rfid-tracker-2qm0.onrender.com
+
 ## ✨ Features
 
 - Live dashboard with part locations
