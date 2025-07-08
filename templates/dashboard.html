@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RFID Dashboard</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        button {
+            margin-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>RFID Part Tracker</h1>
+
+    <a href="/simulate"><button>Simulate RFID Scan</button></a>
+    <a href="/new-part"><button>Create New Part</button></a>
+
+    <div id="summary" style="margin-bottom: 20px; font-weight: bold;">
+        Loading summary...
+    </div>
+
+    <div id="zone-times" style="margin-bottom: 20px;">
+        <strong>Avg Time per Zone (minutes):</strong>
+        <div id="zone-time-values">Loading...</div>
+    </div>
+
+    <canvas id="zoneTimeChart" width="400" height="50"></canvas>
+
+    <div>
+        <label for="zone-filter">Filter by Zone:</label>
+        <select id="zone-filter">
+            <option value="">All Zones</option>
+            <option value="Receiving">Receiving</option>
+            <option value="Warehouse">Warehouse</option>
+            <option value="Machine Shop">Machine Shop</option>
+            <option value="Shipping">Shipping</option>
+        </select>
+
+        <label for="job-filter">Filter by Job ID:</label>
+        <input type="text" id="job-filter" placeholder="Enter job ID" />
+
+        <button onclick="fetchData()">Apply Filters</button>
+        <button onclick="exportCSV()">Download CSV</button>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        <strong>Legend:</strong>
+        <span style="background-color: #fff4b2; padding: 4px;">30+ min idle</span>
+        <span style="background-color: #ffcccc; padding: 4px;">2+ hours idle</span>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tag</th>
+                <th>Zone</th>
+                <th>Subzone</th>
+                <th>Last Scanned</th>
+                <th>Technician</th>
+                <th>Job ID</th>
+            </tr>
+        </thead>
+        <tbody id="parts-table-body"></tbody>
+    </table>
+
+    <script>
+        async function fetchData() {
+            try {
+                const zone = document.getElementById('zone-filter').value;
+                const job = document.getElementById('job-filter').value;
+                const query = new URLSearchParams();
+                if (zone) query.append('zone', zone);
+                if (job) query.append('job_id', job);
+
+                const res = await fetch(`/api/parts?${query.toString()}`);
+                const data = await res.json();
+                const tbody = document.getElementById('parts-table-body');
+                tbody.innerHTML = '';
+
+                const now = new Date();
+                data.forEach(part => {
+                    const lastScan = new Date(part.last_scanned);
+                    const diffMin = (now - lastScan) / (1000 * 60);
+
+                    let bgColor = '';
+                    if (diffMin > 120) {
+                        bgColor = 'background-color: #ffcccc'; // red
+                    } else if (diffMin > 30) {
+                        bgColor = 'background-color: #fff4b2'; // yellow
+                    }
+
+                    const row = document.createElement('tr');
+                    row.setAttribute('style', bgColor);
+                    row.innerHTML = `
+                        <td>${part.tag}</td>
+                        <td>${part.zone}</td>
+                        <td>${part.subzone}</td>
+                        <td>${part.last_scanned}</td>
+                        <td>${part.technician}</td>
+                        <td>${part.job_id}</td>
+                        <td>
+                            <a href="/history/${part.tag}">View</a> |
+                            <button onclick="markDone('${part.tag}')">Done</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (err) {
+                console.error('Fetch failed:', err);
+            }
+        }
+
+        async function fetchSummary() {
+            try {
+                const res = await fetch('/api/summary');
+                const summary = await res.json();
+                const el = document.getElementById('summary');
+                el.innerHTML = `
+                    📦 Receiving: ${summary.Receiving} |
+                    🏬 Warehouse: ${summary.Warehouse} |
+                    🛠 Machine Shop: ${summary["Machine Shop"]} |
+                    📤 Shipping: ${summary.Shipping}
+                `;
+            } catch (err) {
+                console.error('Summary fetch failed:', err);
+            }
+        }
+
+        let zoneChart; // global Chart.js instance
+
+        async function fetchZoneTimes() {
+            try {
+                const res = await fetch('/api/zone-times');
+                const data = await res.json();
+
+                // Update text display
+                const zoneDisplay = Object.entries(data)
+                    .map(([zone, time]) => `${zone}: ${time} min`)
+                    .join(' | ');
+                document.getElementById('zone-time-values').innerText = zoneDisplay;
+
+                // Update chart
+                const labels = Object.keys(data);
+                const values = Object.values(data);
+
+                if (zoneChart) {
+                    zoneChart.data.labels = labels;
+                    zoneChart.data.datasets[0].data = values;
+                    zoneChart.update();
+                } else {
+                    const ctx = document.getElementById('zoneTimeChart').getContext('2d');
+                    zoneChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Avg Time in Zone (min)',
+                                data: values,
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+
+            } catch (err) {
+                console.error('Zone time fetch failed:', err);
+            }
+        }
+
+        function exportCSV() {
+            const zone = document.getElementById('zone-filter').value;
+            const job = document.getElementById('job-filter').value;
+            const query = new URLSearchParams();
+            if (zone) query.append('zone', zone);
+            if (job) query.append('job_id', job);
+
+            window.location.href = `/export-csv?${query.toString()}`;
+        }
+
+        async function markDone(tag) {
+            const confirmed = confirm(`Mark part ${tag} as done and remove it?`);
+            if (!confirmed) return;
+
+            await fetch(`/api/parts/${tag}`, { method: 'DELETE' });
+            fetchData();
+        }
+
+        fetchData();
+        fetchSummary();
+        fetchZoneTimes();
+        setInterval(() => {
+            fetchData();
+            fetchSummary();
+            fetchZoneTimes();
+        }, 10000);
+    </script>
+
+</body>
+</html>

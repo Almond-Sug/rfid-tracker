@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Part</title>
+</head>
+<body>
+    <h1>Create New RFID Part</h1>
+    <form id="new-part-form">
+        <label>Tag: <input type="text" name="tag" required></label><br>
+
+        <label>Zone:
+            <select name="zone" id="zone-select" required>
+                <option value="">Select Zone</option>
+                <option value="Receiving">Receiving</option>
+                <option value="Warehouse">Warehouse</option>
+                <option value="Machine Shop">Machine Shop</option>
+                <option value="Shipping">Shipping</option>
+            </select>
+        </label><br>
+
+        <label>Subzone:
+            <select name="subzone" id="subzone-select" required>
+                <option value="">Select Subzone</option>
+            </select>
+        </label><br>
+
+        <label>Technician: <input type="text" name="technician"></label><br>
+        <label>Job ID: <input type="text" name="job_id"></label><br>
+        <button type="submit">Create</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        const subzoneOptions = {
+            "Receiving": ["Dock 1", "Dock 2"],
+            "Warehouse": ["A1", "A2", "B1", "B2"],
+            "Machine Shop": ["Mill", "Lathe", "QA"],
+            "Shipping": ["Packing", "Exit Gate"]
+        };
+
+        const zoneSelect = document.getElementById('zone-select');
+        const subzoneSelect = document.getElementById('subzone-select');
+
+        zoneSelect.addEventListener('change', () => {
+            const zone = zoneSelect.value;
+            const subzones = subzoneOptions[zone] || [];
+            subzoneSelect.innerHTML = '<option value="">Select Subzone</option>';
+            subzones.forEach(subzone => {
+                const option = document.createElement('option');
+                option.value = subzone;
+                option.textContent = subzone;
+                subzoneSelect.appendChild(option);
+            });
+        });
+
+        document.getElementById('new-part-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const payload = {};
+            formData.forEach((value, key) => payload[key] = value);
+            const res = await fetch('/api/scan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+            document.getElementById('result').innerText = result.message;
+        };
+    </script>
+</body>
+</html>

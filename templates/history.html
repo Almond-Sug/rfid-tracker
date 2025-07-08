@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scan History for {{ part.tag }}</title>
+</head>
+<body>
+    <h1>Scan History: {{ part.tag }}</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Zone</th>
+                <th>Subzone</th>
+                <th>Technician</th>
+                <th>Job ID</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for log in logs %}
+            <tr>
+                <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ log.zone }}</td>
+                <td>{{ log.subzone }}</td>
+                <td>{{ log.technician }}</td>
+                <td>{{ log.job_id }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="/">← Back to Dashboard</a>
+</body>
+</html>
