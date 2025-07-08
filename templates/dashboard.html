@@ -5,20 +5,92 @@
     <title>RFID Dashboard</title>
     <style>
         body {
-            font-family: sans-serif;
-            margin: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 40px;
         }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+
         button {
-            margin-bottom: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            margin: 10px 5px 20px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
         }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        select, input[type="text"] {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
         table {
             border-collapse: collapse;
             width: 100%;
+            background-color: white;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
-        th, td {
-            border: 1px solid #aaa;
-            padding: 8px;
+
+        th {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
             text-align: left;
+        }
+
+        td {
+            border-top: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .legend span {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .legend .yellow {
+            background-color: #fff4b2;
+        }
+
+        .legend .red {
+            background-color: #ffcccc;
+        }
+
+        #summary {
+            font-size: 16px;
+            background-color: #e9ecef;
+            padding: 10px 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            margin-top: 20px;
+            max-width: 600px;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
