@@ -10,36 +10,39 @@
       font-family: 'Inter', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f9f9f9;
-      color: #333;
+      background-color: #f4f4f4;
+      color: #2c2c2c;
       line-height: 1.6;
     }
 
     header {
-      background: linear-gradient(to right, #007bff, #3399ff);
+      background-color: #3a3a3a;
       color: white;
-      padding: 3rem 1rem;
+      padding: 2.5rem 1rem;
       text-align: center;
     }
 
     header h1 {
       margin: 0;
-      font-size: 2.5rem;
+      font-size: 2.2rem;
+      font-weight: 600;
     }
 
     header p {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       margin-top: 0.5rem;
+      color: #d0d0d0;
     }
 
     .demo-banner {
-      background: #fff8e1;
+      background: #fff7d6;
       border-left: 4px solid #ffc107;
       padding: 1rem 1.5rem;
       margin: 2rem auto;
       max-width: 800px;
-      border-radius: 6px;
+      border-radius: 4px;
       font-size: 0.95rem;
+      color: #5c5c2c;
     }
 
     section.cta {
@@ -52,79 +55,66 @@
     .buttons {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 1rem;
       flex-wrap: wrap;
       margin-top: 1rem;
     }
 
     .buttons a {
       text-decoration: none;
-      padding: 0.75rem 1.5rem;
+      padding: 0.65rem 1.25rem;
       font-weight: 600;
-      border-radius: 6px;
+      border-radius: 4px;
+      background-color: #555;
+      color: white;
       transition: background-color 0.3s ease;
+      font-size: 0.95rem;
     }
 
-    .buttons a:first-child {
-      background-color: #212529;
-      color: white;
-    }
-
-    .buttons a:first-child:hover {
-      background-color: #343a40;
-    }
-
-    .buttons a:last-child {
-      background-color: #007bff;
-      color: white;
-    }
-
-    .buttons a:last-child:hover {
-      background-color: #0056b3;
+    .buttons a:hover {
+      background-color: #333;
     }
 
     main {
       max-width: 800px;
       margin: 2rem auto;
       padding: 2rem;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      background-color: #ffffff;
+      border-radius: 6px;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
     }
 
     h2 {
-      color: #007bff;
+      color: #444;
+      font-size: 1.4rem;
       margin-top: 2rem;
+      font-weight: 600;
+    }
+
+    ul, ol {
+      padding-left: 1.25rem;
     }
 
     code {
-      background-color: #f4f4f4;
+      background-color: #eee;
       padding: 2px 6px;
       border-radius: 4px;
       font-family: monospace;
     }
 
     a {
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    a:hover {
+      color: #444;
       text-decoration: underline;
     }
 
-    ul {
-      padding-left: 1.25rem;
-    }
-
-    ol {
-      padding-left: 1.25rem;
+    a:hover {
+      text-decoration: none;
     }
 
     footer {
       text-align: center;
       padding: 2rem 1rem;
-      color: #777;
+      color: #999;
       font-size: 0.9rem;
     }
   </style>
@@ -148,20 +138,20 @@
   </section>
 
   <main>
-    <h2>🔍 What This Is</h2>
+    <h2>What This Is</h2>
     <p>This is a prototype RFID-based tracking system for managing valve parts through multiple zones (Receiving, Warehouse, Machine Shop, Shipping). It simulates RFID scans, logs history, and presents a live-updating dashboard for real-time tracking.</p>
 
-    <h2>⚙️ Features</h2>
+    <h2>Features</h2>
     <ul>
-      <li>🔄 Live dashboard with polling every 10s</li>
-      <li>🏷️ Filter parts by zone or job</li>
-      <li>📍 Color-coded idle time alerts (yellow = 30+ min, red = 2+ hours)</li>
-      <li>📊 Part history with timestamped zone transitions</li>
-      <li>📤 CSV export for recordkeeping</li>
-      <li>🧪 Manual scan simulation interface</li>
+      <li>Live dashboard with polling every 10s</li>
+      <li>Filter parts by zone or job</li>
+      <li>Color-coded idle time alerts (yellow = 30+ min, red = 2+ hours)</li>
+      <li>Part history with timestamped zone transitions</li>
+      <li>CSV export for recordkeeping</li>
+      <li>Manual scan simulation interface</li>
     </ul>
 
-    <h2>🧠 Architecture</h2>
+    <h2>Architecture</h2>
     <ul>
       <li>Frontend: HTML + JavaScript + Chart.js</li>
       <li>Backend: Python + Flask</li>
@@ -169,7 +159,7 @@
       <li>Deployment: Render.com (backend) + GitHub Pages (docs)</li>
     </ul>
 
-    <h2>📦 Tech Stack</h2>
+    <h2>Tech Stack</h2>
     <ul>
       <li>Python 3.11</li>
       <li>Flask 2+</li>
@@ -178,14 +168,14 @@
       <li>HTML + JavaScript (Vanilla)</li>
     </ul>
 
-    <h2>📌 How to Use</h2>
+    <h2>How to Use</h2>
     <ol>
       <li>Scan tags using the simulation form or API</li>
       <li>Track part location and technician assignment in real-time</li>
       <li>Click "View" to see movement history</li>
     </ol>
 
-    <h2>🔧 Future Improvements</h2>
+    <h2>Future Improvements</h2>
     <ul>
       <li>Authentication + user roles</li>
       <li>Mobile-friendly dashboard</li>
